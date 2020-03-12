@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'eshop.apps.EshopConfig',
+    'crispy_forms',
 
 ]
 
@@ -147,3 +148,7 @@ AUTHENTICATION_BACKENDS = (
 
 )
 SITE_ID = 1
+LOGIN_REDIRECT_URL = '/eshop'
+
+# CRISPY FORMS
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
