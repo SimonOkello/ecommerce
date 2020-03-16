@@ -33,6 +33,7 @@ class Item(models.Model):
             'slug': self.slug
         })
 # Add To Cart Url
+
     def get_add_to_cart_url(self):
         return reverse('add-to-cart', kwargs={
             'slug': self.slug
@@ -44,6 +45,7 @@ class Item(models.Model):
             'slug': self.slug
         })
 
+
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
@@ -53,6 +55,20 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} of {self.item.title}"
+
+    def get_total_item_price(self):
+        return self.quantity * self.item.price
+
+    def get_total_discount_item_price(self):
+        return self.quantity * self.item.discount_price
+    
+    def get_amount_saved(self):
+        return self.get_total_item_price() - self.get_total_discount_item_price()
+    
+    def get_final_price(self):
+        if self.item.discount_price:
+            return self.get_total_discount_item_price()
+        return self.get_total_item_price()
 
 
 class Order(models.Model):
@@ -65,7 +81,9 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.user)
-
-
-
     
+    def get_total(self, *args, **kwargs):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.get_final_price()
+        return total
