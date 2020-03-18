@@ -15,12 +15,34 @@ class HomeView(ListView):
     paginate_by = 10
     template_name = 'index.html'
 
+class ShopView(View):
+    def get(self, *args, **kwargs):
+        products = Item.objects.all()
+        return render(self.request, 'shop.html', {'products':products})
+
+class ProductView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'product.html', {})
+
+class BlogView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'blog.html', {})
+
+class ContactView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'contact.html', {})
+
+
+class FaqView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'faq.html', {})
+
 
 class OrderSummaryView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
-            return render(self.request, 'order_summary.html', {'object':order})
+            return render(self.request, 'shopping-cart.html', {'object':order})
 
         except ObjectDoesNotExist:
             messages.error(self.request, 'You do not have an active order')
@@ -29,7 +51,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
 
 class ItemDetailView(DetailView):
     model = Item
-    template_name = 'product_detail.html'
+    template_name = 'product.html'
 
 
 class CheckoutView(View):
@@ -37,7 +59,7 @@ class CheckoutView(View):
         #form
         form = CheckoutForm()
 
-        return render(self.request, 'checkout.html', {'form':form})
+        return render(self.request, 'check-out.html', {'form':form})
 
     def post(self, *args, **kwargs):
         #form
@@ -64,7 +86,7 @@ class CheckoutView(View):
                 billing_address.save()
                 order.billing_address = billing_address
                 order.save()
-                # TODO: add a redirect to select payment option.
+                # TODO: add a redirect to selected payment option.
                 return redirect('checkout')
             messages.warning(self.request, 'Failed to checkout')
             return redirect('checkout')
@@ -74,6 +96,10 @@ class CheckoutView(View):
             messages.error(self.request, 'You do not have an active order')
             return redirect('order-summary')
 
+# Payment View
+class PaymentView(View):
+    def get(self, *args, **kwargs):
+        return render(self.request, 'payment.html', {})
         
 
 # Add To Cart View
@@ -103,7 +129,7 @@ def add_to_cart(request, slug):
     else:
         order = Order.objects.create(
             user=request.user, ordered_date=ordered_date)
-        order.item.add(order_item)
+        order.items.add(order_item)
         messages.info(request, "This item was added to your cart.")
         return redirect('order-summary')
     return redirect('order-summary')

@@ -37,13 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'eshop.apps.EshopConfig',
+    'crispy_forms',
+    'django_countries',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'eshop.apps.EshopConfig',
-    'crispy_forms',
-    'django_countries',
+    
 
 ]
 
@@ -149,7 +150,7 @@ AUTHENTICATION_BACKENDS = (
 
 )
 SITE_ID = 1
-LOGIN_REDIRECT_URL = '/eshop'
+LOGIN_REDIRECT_URL = '/'
 
 # CRISPY FORMS
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

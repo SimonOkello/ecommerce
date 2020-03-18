@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <!-- Breadcrumb Section Begin -->
+    <div class="breacrumb-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-text product-more">
+                        <a href="./home.html"><i class="fa fa-home"></i> Home</a>
+                        <a href="./shop.html">Shop</a>
+                        <span>Shopping Cart</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb Section Begin -->
+
+    <!-- Shopping Cart Section Begin -->
+    <section class="shopping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="cart-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th class="p-name">Product Name</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th><i class="ti-close"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                 {% for order_item in object.items.all %}
+                                <tr>
+                                    <td class="cart-pic first-row"><img src="img/cart-page/product-1.jpg" alt=""></td>
+                                    <td class="cart-title first-row">
+                                        <h5>{{order_item.item.title}}</h5>
+                                    </td>
+                                    <td class="p-price first-row">
+                                        {% if order_item.item.discount_price %}
+                                        {{order_item.item.discount_price|floatformat:2}}
+                                        {% else %}
+                                        {{order_item.item.price|floatformat:2}}
+                                        {% endif %}
+                                    </td>
+                                    <td class="qua-col first-row">
+                                        <div class="quantity">
+                                             <a href="{% url 'remove-single-item-from-cart' order_item.item.slug %}"><i class="fas fa-minus mr-2"></i></a>
+                                            {{order_item.quantity}}
+                                            <a href="{% url 'add-to-cart' order_item.item.slug %}"><i class="fas fa-plus ml-2"></i></a></td>
+                                        </div>
+                                    </td>
+                                     
+            
+                                    <td class="total-price first-row">{% if order_item.item.discount_price %}
+                                    Ksh. {{order_item.get_total_discount_item_price|floatformat:2}}
+                                    <span class="badge badge-primary">Saving Ksh. {{order_item.get_amount_saved|floatformat:2}}</span>
+                                    {% else %}
+                                    Ksh. {{order_item.get_total_item_price|floatformat:2}}
+                                    {% endif %}
+                                    </td>
+                                    <td class="close-td first-row"><a href="{% url 'remove-from-cart' order_item.item.slug %}"><i class="ti-close"></i></a></td>
+                                </tr>
+                                {% empty %}
+                                 <tr>
+                                <td colspan="5">Your cart is empty </td>
+                                </tr>
+                               {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="cart-buttons">
+                                <a href="{% url 'shop' %}" class="primary-btn continue-shop">Continue shopping</a>
+                                <a href="#" class="primary-btn up-cart">Update cart</a>
+                            </div>
+                            <div class="discount-coupon">
+                                <h6>Discount Codes</h6>
+                                <form action="#" class="coupon-form">
+                                    <input type="text" placeholder="Enter your codes">
+                                    <button type="submit" class="site-btn coupon-btn">Apply</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 offset-lg-4">
+                            <div class="proceed-checkout">
+                                {% if object.get_total %}
+                                <ul>
+                                    <!-- <li class="subtotal">Subtotal <span>$240.00</span></li> -->
+                                    <li class="cart-total">Total <span>Ksh. {{object.get_total|floatformat:2}}</span></li>
+                                </ul>
+                                
+                                <a href="{% url 'checkout' %}" class="proceed-btn">PROCEED TO CHECK OUT</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shopping Cart Section End -->
+
+   {% endblock %}
